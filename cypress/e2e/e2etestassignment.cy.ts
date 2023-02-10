@@ -21,14 +21,14 @@ describe('typing, clicking and submitting', () => {
   })
 
   it('should submit with click on searchbutton', () => {
-    cy.intercept('GET', 'http://omdbapi.com/?apikey=416ed51a&s=*', {fixture: "omdbResponse"}).as('omdbCall');
+    cy.intercept('GET', 'http://omdbapi.com/?apikey=416ed51a&s=*', {fixture: "omdbResponse"});
     cy.get('input#searchText').type('Avengers');
     cy.get('button#search').click();
     cy.get('h3').contains('Avengers').should('exist');
   })
 
   it('should submit with submitevent from form', () => {
-    cy.intercept('GET', 'http://omdbapi.com/?apikey=416ed51a&s=*', {fixture: "omdbResponse"}).as('omdbCall');
+    cy.intercept('GET', 'http://omdbapi.com/?apikey=416ed51a&s=*', {fixture: "omdbResponse"});
     cy.get('input#searchText').type('Avengers');
     cy.get('form').submit();
     cy.get('h3').contains('Avengers').should('exist');
@@ -41,7 +41,17 @@ describe('typing, clicking and submitting', () => {
 
 });
 
-describe('check that stuff from api (MOCK) appears', () => {
+describe('check that a real call to api works and non-MOCK data appears', () => {
+
+  it('should have more div.movie elements than 0 after search', () => {
+    cy.get('input#searchText').type('Avengers');
+    cy.get('form').submit();
+    cy.get('div.movie').should('have.length.greaterThan', 0);
+  })
+
+});
+
+describe('check that data from api (MOCK) appears', () => {
 
   it('should have a h3 after search', () => {
     cy.intercept('GET', 'http://omdbapi.com/?apikey=416ed51a&s=*', {fixture: "omdbResponse"});
@@ -52,7 +62,7 @@ describe('check that stuff from api (MOCK) appears', () => {
   })
 
   it('should have an image after search', () => {
-    cy.intercept('GET', 'http://omdbapi.com/?apikey=416ed51a&s=*', {fixture: "omdbResponse"}).as('omdbCall');
+    cy.intercept('GET', 'http://omdbapi.com/?apikey=416ed51a&s=*', {fixture: "omdbResponse"});
     cy.get('input#searchText').type('Avengers');
     cy.get('form').submit();
     cy.get('img').should('exist');
@@ -60,9 +70,7 @@ describe('check that stuff from api (MOCK) appears', () => {
 
 });
 
-/* cy.intercept('METHOD', 'URL/*', {testdata}).as('apiCall'); */
-
-describe('should get tests with mock', () => {
+describe('should make request from api with correct url', () => {
 
   it('should request from api with correct url', () => {
     cy.intercept('GET', 'http://omdbapi.com/?apikey=416ed51a&s=*', {fixture: "omdbResponse"}).as('omdbCall');
